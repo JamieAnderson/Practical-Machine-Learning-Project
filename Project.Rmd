@@ -20,7 +20,7 @@ I then compared these five models using the OOB bootstrap accuracy as a performa
 
 Since the C5.0 model was the most accurate, I used it to predict the test set that I had created, to again estimate the out-of-sample accuracy, and finally I applied it to the 20 observations in the real test set, and all 20 were predicted correctly. <br>
 
-Before running the final C5.0 model on the Course's test set, I *estimated the test set error* three times.  The first was during the tuning process (10 fold cv).  The second was the average of the 100 bootstrap OOB samples, and the third was on the test set I created.  The errors (1-accuracy) were: *0.40%* , *0.35%*, and *1.1%*  respectively.<br>
+Before running the final C5.0 model on the Course's test set, I **estimated the test set error** three times.  The first was during the tuning process (10 fold cv).  The second was the average of the 100 bootstrap OOB samples, and the third was on the test set I created.  The errors (1-accuracy) were: **1.8%** , **3.0%**, and **1.1%**  respectively.<br>
 
 Here is the code that I ran from start to finish.  I will ocassionally pop-in for some additional commentary, but hopefully the comments, code, and graphics are explanatory enough. Enjoy! <br>
 
@@ -180,8 +180,8 @@ accGrid <- accGrid[,order(colMeans(accGrid,na.rm=T))]
 accMelt <- melt(accGrid,id=NULL)
 modelfit <- ggplot(data=accMelt,aes(x=variable,y=value))+
         geom_boxplot(fill="orange",notch=T,outlier.size=0)
-modelfit+geom_point(position=position_jitter(w = 0.2),size=3,color="darkblue",alpha=0.5)+
-        scale_y_continuous(limits=c(.65,1),breaks=seq(0.65,1,by=0.05))
+modelfit+geom_point(position=position_jitter(w = 0.2),size=3,color="darkblue",alpha=0.5)+ylab("Accuracy")+xlab("Model Used")+
+        scale_y_continuous(limits=c(.65,1),breaks=seq(0.65,1,by=0.025))
 ```
 <br>So as you can see, C5.0 performed the best and I will therefore use it as my final prediction model.
 ```{r}
@@ -190,7 +190,7 @@ testPreds <- predict(c5TrainedFin,testingSet)
 postResample(testPreds,testingResponse)
 confusionMatrix(testPreds,testingResponse)
 ```
-According to my test set, C5.0 model has an accuracy of over 98.9%.  This is slightly lower, then the OOB estimate from the bootstrapping process.
+According to my test set, C5.0 model has an accuracy of over 98.9%.  This is slightly higher than the OOB estimate from the bootstrapping process.
 
 
 ```{r} 
